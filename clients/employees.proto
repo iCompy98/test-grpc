@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package employeePackage;
+
+service employeesService {
+	rpc createEmployee (Employee) returns (frase);
+	rpc readEmployees(vacio) returns (Employees);
+	rpc readEmployeesStream(vacio) returns (stream Employee);
+}
+
+message vacio {}
+
+message frase {
+	string mensage =1;
+}
+
+message Employee {
+	int32 id =1;
+	string name = 2;
+	float salary = 3;
+}
+
+message Employees{
+	repeated Employee employees =1;
+}
