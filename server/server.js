@@ -9,6 +9,7 @@ const grpcObject = grpc.loadPackageDefinition(packageDef);
 const employeePackage = grpcObject.employeePackage;
 const arrayEmployees = []
 const server = new grpc.Server();
+
 server.bind("0.0.0.0:4040", grpc.ServerCredentials.createInsecure());
 server.addService(employeePackage.employeesService.service,{
 	"createEmployee": createEmployee,
@@ -16,6 +17,7 @@ server.addService(employeePackage.employeesService.service,{
 	"readEmployeesStream": readEmployeesStream
 });
 server.start()
+console.log("Server started, port listening: 4040")
 
 function createEmployee (call, callback) {
 	console.log(call.request);

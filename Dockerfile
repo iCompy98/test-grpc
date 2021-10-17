@@ -6,10 +6,12 @@ COPY package.json /app/
 
 RUN npm install
 
-COPY server/ /app/
+COPY server/ /app
 
 EXPOSE 4040
 
-CMD ["node","server/server.js"]
+RUN ls
+
+CMD ["node","server.js"]
 
 

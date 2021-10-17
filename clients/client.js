@@ -5,7 +5,7 @@ const grpcObject = grpc.loadPackageDefinition(packageDef);
 const employeePackage = grpcObject.employeePackage;
 const arrayEmpleados = require("./employeesList.json")
 
-const client = new employeePackage.employeesService("10.0.8.188:4040", grpc.credentials.createInsecure());
+const client = new employeePackage.employeesService("0.0.0.0:4040", grpc.credentials.createInsecure());
 
 arrayEmpleados.forEach(employee =>{
 	client.createEmployee(employee,(err,res)=>{
