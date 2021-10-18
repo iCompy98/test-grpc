@@ -1,11 +1,7 @@
 const grpc = require('grpc');
-
 const protoLoader = require('@grpc/proto-loader');
-
 const packageDef = protoLoader.loadSync("employees.proto",{});
-
 const grpcObject = grpc.loadPackageDefinition(packageDef);
-
 const employeePackage = grpcObject.employeePackage;
 const arrayEmployees = []
 const server = new grpc.Server();
@@ -34,3 +30,6 @@ function readEmployeesStream(call,callback){
 	arrayEmployees.forEach(emp => call.write(emp))
 	call.end();
 }
+
+export default server;
+
