@@ -10,7 +10,7 @@ COPY server/ /app
 
 EXPOSE 4040
 
-RUN ls
+RUN ls 
 
 CMD ["node","server.js"]
 
