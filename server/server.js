@@ -1,4 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
+const testDb = require("better-sqlite3");
 const grpc = require("grpc");
 const protoLoader = require("@grpc/proto-loader");
 const packageDef = protoLoader.loadSync("employees.proto", {});
@@ -43,27 +44,15 @@ function readEmployees(call, callback) {
 }
 
 function readEmployeesStream(call, callback) {
-	var allEmployees = [];
-	
-	let db = new sqlite3.Database("./employees.db", (err) => {
-		if (err === null) {
-			console.log("Se abrio la conexion, con opcion de escribir");
-		} else {
-			console.log("Algo paso");
-		}
-	});
-	
-	const test = await db.all("SELECT * FROM Employees");
-	console.log(test)
-	console.log("Please God!! ",allEmployees);
-	call.write({name:"Hola"})
-	call.end();
-}
 
-function getEmployees(db){
-	return new Promise((resolve,reject)=>{
-		var responseObj;
-		//Aqui meter la conexion y hacer los metodos  resolve y reject
-	});
+	const db = new testDb("./employees.db",{verbose: console.log});
+
+	const stmt = db.prepare('SELECT * FROM Employees')
+	const listEmployees = stmt.all()
+	db.close();
+
+	listEmployees.forEach((emp)=>call.write(emp))
+
+	call.end();
 }
 
