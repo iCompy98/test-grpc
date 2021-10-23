@@ -16,27 +16,29 @@ server.addService(employeePackage.employeesService.service, {
 server.start();
 console.log("Server started, port listening: 4040");
 
+
 function createEmployee(call, callback) {
 	let data = call.request;
 	let mes;
-	let db = new sqlite3.Database("./employees.db", (err) => {
-		if (err === null) {
-			console.log("Se abrio la conexion, con opcion de escribir");
-		} else {
-			console.log("Algo paso");
-		}
-	});
 
-	db.run("INSERT INTO Employees(id,name,salary) VALUES(?,?,?)",[data.id, data.name, data.salary],(err)=>{
-		if(err){
-			console.log(err.message);
-			mes = err.message;
-		}else{
-			mes = 'Se agregó el empleado correctamente';
-		}
-		db.close((err)=>{console.log("Se cerro correctamente")});
-		callback(null, { mensage: mes });
-	});	
+	const db = new testDb("./employees.db",{ verbose: console.log("Creando la conexion")});
+
+	const insert = db.prepare("INSERT INTO Employees(id,name,salary) VALUES (@id,@name,@salary)");
+
+	const inserting = db.transaction(emp=>{
+		//emps.forEach(emp=>insert.run(emp));
+		insert.run(emp);
+		console.log(`Creando el empleado ${emp.name}`);
+
+	})
+
+	inserting(data);
+
+	db.close();
+
+	console.log(db.open ? "Aun no se cierra la conexion" : "Se cerro la conexion");
+
+	callback(null, { mensage: 'Se agregó el empleado correctamente' });
 }
 
 function readEmployees(call, callback) {
@@ -44,13 +46,16 @@ function readEmployees(call, callback) {
 }
 
 function readEmployeesStream(call, callback) {
+	const db = new testDb("./employees.db",{ verbose: console.log("Creando la conexion")});
+	const stmt = db.prepare('SELECT * FROM Employees');
+	
+	console.log("Haciendo el get de la información")
+	const listEmployees = stmt.all();
 
-	const db = new testDb("./employees.db",{verbose: console.log});
-
-	const stmt = db.prepare('SELECT * FROM Employees')
-	const listEmployees = stmt.all()
 	db.close();
-
+	
+	console.log(db.open ? "Aun no se cierra la conexion" : "Se cerro la conexion");
+	
 	listEmployees.forEach((emp)=>call.write(emp))
 
 	call.end();
