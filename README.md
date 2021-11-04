@@ -8,20 +8,33 @@ This directory contains the compiler to the .proto file
 
 ## Dockerfile
 
-To run the server on docker, you will need run the Dockerfile.
+In this proyect, you have two Dockerfiles, ones to server and another to the API.
 
-First, you will go to the directory where you have the Dockerfile
+To create any image, you need to be in the path of the Dockerfile, whatever you want.
 
+Like:
 ` cd path/to/Dockerfile `
 
-then, you need to build the docker image
+Now, you need to build the images. Preferably, the server should be called "grpc-server" and the API "grpc-api"  
 
-` docker build -t grpc-server . `
+` docker build -t grpc-XXX . `
 
-finally, you need to create the container, exposing on port 4040, like
+Finally. you need run the proyects. We need the port 4040 for grpc server, and the port 3002 to api server
 
-` docker run -it -p 4040:4040 grpc-server `
+` docker run -p XXXX:XXXX grpc-XXXX `
 
-And that's all. you will have an open console with the server's responses
-
+NOTE: These images have statics ports so, if you want to change the ports, you must change the files
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
