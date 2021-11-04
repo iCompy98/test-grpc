@@ -7,11 +7,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/', (req,res)=>{
+	//console.log("req ",req)
 	res.send({message:'Mi primer prueba'})
+
 })
 
 app.post('/employees/add', (req,res)=>{
-	//console.log(req.body)
+	console.log("POST add employee")
 	//console.log("INSERT the employee")
 	client.createEmployee(req.body,(err,resServer)=>{
 		//err === null ? res.send(resServer) : res.send(err)
@@ -23,6 +25,7 @@ app.post('/employees/add', (req,res)=>{
 })
 
 app.get('/employees/list',(req,res)=>{
+	console.log("GET employees list")
 	let arrayEmployees = []
 //	console.log("Starting the employees stream...")
 	call = client.readEmployeesStream();
@@ -31,12 +34,25 @@ app.get('/employees/list',(req,res)=>{
 		//console.log(`Empleado: ${e.name}`)
 	})
 	call.on("end",()=>{
-		console.log(arrayEmployees)
+		//console.log(arrayEmployees)
 		res.send(arrayEmployees)
 	})
 })
 
-app.listen(3000,()=>{
-	console.log("Listening on port 3000")
+app.delete('/employees/:id',(req,res)=>{
+	console.log("DELETE employee")
+	//console.log("Request del delete ",req)
+	//console.log("Employee ")
+	client.deleteEmployee(req.params,(err, resServer)=>{
+		//console.log(err === null ? resServer : err)
+		res.send(err === null ? resServer : err);
+		//console.log(err)
+		//console.log(resServer)
+	})
+	//res.send({"message":"Mira na mas"})
+})
+
+app.listen(3002,()=>{
+	console.log("Listening on port 3002")
 })
 

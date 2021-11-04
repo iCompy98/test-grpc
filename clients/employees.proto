@@ -6,9 +6,14 @@ service employeesService {
 	rpc createEmployee (Employee) returns (frase);
 	rpc readEmployees(vacio) returns (Employees);
 	rpc readEmployeesStream(vacio) returns (stream Employee);
+	rpc deleteEmployee (idEmployee) returns (frase);
 }
 
 message vacio {}
+
+message idEmployee {
+	int32 id = 1;
+}
 
 message frase {
 	string mensage =1;

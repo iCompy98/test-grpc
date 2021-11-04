@@ -12,12 +12,15 @@ server.addService(employeePackage.employeesService.service, {
   createEmployee: createEmployee,
   readEmployees: readEmployees,
   readEmployeesStream: readEmployeesStream,
+  deleteEmployee: deleteEmployee
 });
 server.start();
 console.log("Server started, port listening: 4040");
 
 
 function createEmployee(call, callback) {
+	console.log("---------------------------")
+	console.log("Crear empleado")
 	let data = call.request;
 	let mes;
 
@@ -39,13 +42,16 @@ function createEmployee(call, callback) {
 	console.log(db.open ? "Aun no se cierra la conexion" : "Se cerro la conexion");
 
 	callback(null, { mensage: 'Se agregó el empleado correctamente' });
+	console.log("---------------------------")
 }
 
 function readEmployees(call, callback) {
   callback(null, { employees: arrayEmployees });
 }
 
-function readEmployeesStream(call, callback) {
+function readEmployeesStream(call, callback){ 
+	console.log("---------------------------")
+	console.log("Lista de empleado")
 	const db = new testDb("./employees.db",{ verbose: console.log("Creando la conexion")});
 	const stmt = db.prepare('SELECT * FROM Employees');
 	
@@ -59,5 +65,33 @@ function readEmployeesStream(call, callback) {
 	listEmployees.forEach((emp)=>call.write(emp))
 
 	call.end();
+	console.log("---------------------------")
 }
 
+function deleteEmployee(call, callback){
+	console.log("---------------------------")
+	console.log("Eliminar empleado")
+	//console.log(call);
+	const idEmployee = call.request.id;
+
+	const db = new testDb("./employees.db",{ verbose: console.log("Creando la conexion")});
+	const stmt = db.prepare(`DELETE FROM Employees WHERE id =?`);
+
+	const info = stmt.run(idEmployee);
+
+	console.log("Resultado del query ",info)
+
+	db.close();
+
+	console.log(db.open ? "Aun no se cierra la conexion" : "Se cerro la conexion");
+
+	const msg = info.changes !== 0 ? `Se elimino el empleado con el id ${idEmployee}` 
+		:  `No se elimino ningun registro, favor de revisar.`
+
+	console.log({mensage: msg})
+	callback(null, { mensage: msg });
+	console.log("---------------------------")
+	/*info.changes !== 0 
+		? callback(null, { message: `Se elimino el empleado con el id ${idEmployee}`   })
+		: callback(null, { message: `No se elimino ningun registro, favor de revisar.`  });*/
+}
